@@ -1,81 +1,80 @@
 package main
 
 import (
-	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gocolly/colly"
+	"github.com/labstack/echo"
 )
 
 type ReservoirData struct {
-	variable  string
-	value     string
-	timestamp string
+	Timestamp string `json:"timestamp"`
+	Variable  string `json:"variable"`
+	Value     string `json:"value"`
+	Unit      string `json:"unit"`
 }
 
 func main() {
 
-	var datatable []ReservoirData
+	e := echo.New()
+	e.GET("/", func(n echo.Context) error {
 
-	// creating a new Colly instance
-	c := colly.NewCollector()
-	c.SetRequestTimeout(120 * time.Second)
+		var datatable []ReservoirData
+		var url string = "https://www.saihduero.es/risr/EM171"
 
-	// visiting the target page
-	var url string = "https://www.saihduero.es/risr/EM171"
-	c.Visit(url)
+		// creating a new instance
+		c := colly.NewCollector()
+		c.SetRequestTimeout(120 * time.Second)
 
-	// opening the CSV file
-	file, err := os.Create("products.csv")
-	if err != nil {
-		log.Fatalln("Failed to create output CSV file", err)
-	}
-	defer file.Close()
+		c.OnRequest(func(r *colly.Request) {
+			fmt.Println("Visiting:", r.URL)
+		})
 
-	// initializing a file writer
-	writer := csv.NewWriter(file)
+		c.OnResponse(func(r *colly.Response) {
+			fmt.Println("Got a response from", r.Request.URL)
+		})
 
-	// writing the CSV headers
-	headers := []string{
-		"variable",
-		"valor",
-		"fecha",
-	}
-	writer.Write(headers)
+		c.OnError(func(r *colly.Response, e error) {
+			fmt.Println("Got this error:", e)
+		})
 
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting:", r.URL)
+		c.OnHTML("div.table-responsive:not(.m-b-10) > table > tbody", func(e *colly.HTMLElement) {
+			e.ForEach("tr", func(i int, h *colly.HTMLElement) {
+				data := ReservoirData{}
+				words := strings.Split(h.ChildText("td:nth-of-type(2)"), " ")
+
+				data.Variable = h.ChildText("td:nth-of-type(1)")
+				data.Value = strings.Replace(strings.Replace(words[0], ".", "", -1), ",", ".", -1)
+				data.Unit = words[1]
+				data.Timestamp = h.ChildText("td:nth-of-type(3) > span.hidden-sm-down")
+
+				datatable = append(datatable, data)
+			})
+		})
+
+		c.OnScraped(func(r *colly.Response) {
+			fmt.Println("Finished", r.Request.URL)
+			js, err := json.MarshalIndent(datatable, "", "    ")
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("Writing data to file")
+			if err := os.WriteFile("data.json", js, 0664); err == nil {
+				fmt.Println("Data written to file successfully")
+			}
+		})
+
+		// visiting the target page
+		c.Visit(url)
+
+		return n.JSON(http.StatusOK, datatable)
 	})
-
-	c.OnResponse(func(r *colly.Response) {
-		fmt.Println("Got a response from", r.Request.URL)
-	})
-
-	c.OnError(func(r *colly.Response, e error) {
-		fmt.Println("Got this error:", e)
-	})
-
-	c.OnHTML("table:first-of-type > tbody > tr > td", func(e *colly.HTMLElement) {
-		data := ReservoirData{}
-		data.variable = e.ChildText("td:nth-of-type(1)")
-		fmt.Println("Body scrapping complete")
-	})
-
-	// writing each item as a CSV row
-	for _, item := range datatable {
-		// converting a struct to an array of strings
-		record := []string{
-			item.variable,
-			item.value,
-			item.timestamp,
-		}
-
-		// adding a CSV record to the output file
-		writer.Write(record)
-	}
-	defer writer.Flush()
+	e.Logger.Fatal(e.Start(":1323"))
 
 }
