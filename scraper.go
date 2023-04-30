@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gocolly/colly"
+	"github.com/gocolly/colly/v2"
 )
 
 type ReservoirData struct {
@@ -39,7 +39,7 @@ func Scrape(url string) []ReservoirData {
 	c.OnHTML("div.table-responsive:not(.m-b-10) > table > tbody", func(e *colly.HTMLElement) {
 		e.ForEach("tr", func(i int, h *colly.HTMLElement) {
 			data := ReservoirData{}
-			words := strings.Split(h.ChildText("td:nth-of-type(2)"), " ")
+			words := strings.Fields(h.ChildText("td:nth-of-type(2)"))
 
 			data.Variable = h.ChildText("td:nth-of-type(1)")
 			data.Value = strings.Replace(strings.Replace(words[0], ".", "", -1), ",", ".", -1)
