@@ -18,7 +18,7 @@ type ReservoirData struct {
 	Unit      string `json:"unit"`
 }
 
-func Scrape(url string) []ReservoirData {
+func scrape(url string) []ReservoirData {
 	var datatable []ReservoirData
 
 	c := colly.NewCollector()

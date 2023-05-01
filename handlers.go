@@ -7,7 +7,7 @@ import (
 
 func home(w http.ResponseWriter, r *http.Request) {
 
-	datatable := Scrape("https://www.saihduero.es/risr/EM171")
+	datatable := scrape("https://www.saihduero.es/risr/EM171")
 
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
