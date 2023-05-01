@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
@@ -18,7 +18,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(datatable)
 }
 
-func reservoir(w http.ResponseWriter, r *http.Request) {
+func (app *application) reservoir(w http.ResponseWriter, r *http.Request) {
 
 	datatable := scrape("https://www.saihduero.es/risr/EM171")
 
