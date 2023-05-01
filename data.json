@@ -1,32 +1,32 @@
 [
     {
-        "timestamp": "30/04/2023 10:20",
+        "timestamp": "01/05/2023 17:00",
         "variable": "Nivel",
-        "value": "1091.85",
+        "value": "1091.72",
         "unit": "m.s.n.m"
     },
     {
-        "timestamp": "30/04/2023 10:20",
+        "timestamp": "01/05/2023 17:00",
         "variable": "Nivel relativo",
-        "value": "79.85",
+        "value": "79.72",
         "unit": "m"
     },
     {
-        "timestamp": "30/04/2023 10:20",
+        "timestamp": "01/05/2023 17:00",
         "variable": "Porcentaje de volumen embalsado",
-        "value": "75.0",
+        "value": "74.6",
         "unit": "%"
     },
     {
-        "timestamp": "30/04/2023 10:10",
+        "timestamp": "01/05/2023 17:00",
         "variable": "Caudal vertido",
-        "value": "21.8",
+        "value": "20.3",
         "unit": "m3/s"
     },
     {
-        "timestamp": "30/04/2023 10:20",
+        "timestamp": "01/05/2023 17:00",
         "variable": "Volumen embalsado",
-        "value": "488.00",
+        "value": "485.64",
         "unit": "hm3"
     }
 ]

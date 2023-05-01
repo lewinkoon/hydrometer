@@ -1,18 +1,20 @@
 package main
 
 import (
+	"flag"
+	"log"
 	"net/http"
-
-	"github.com/labstack/echo"
 )
 
 func main() {
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
 
-	e := echo.New()
-	e.GET("/", func(n echo.Context) error {
-		datatable := Scrape("https://www.saihduero.es/risr/EM171")
-		return n.JSON(http.StatusOK, datatable)
-	})
-	e.Logger.Fatal(e.Start(":1323"))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", home)
+
+	log.Printf("Starting server on %s", *addr)
+	err := http.ListenAndServe(*addr, mux)
+	log.Fatal(err)
 
 }
