@@ -1,10 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
-	"os"
 	"strings"
 	"time"
 
@@ -52,14 +49,14 @@ func scrape(url string) []ReservoirData {
 
 	c.OnScraped(func(r *colly.Response) {
 		fmt.Println("Finished", r.Request.URL)
-		js, err := json.MarshalIndent(datatable, "", "    ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Writing data to file")
-		if err := os.WriteFile("data.json", js, 0664); err == nil {
-			fmt.Println("Data written to file successfully")
-		}
+		/* 		js, err := json.MarshalIndent(datatable, "", "    ")
+		   		if err != nil {
+		   			log.Fatal(err)
+		   		}
+		   		fmt.Println("Writing data to file")
+		   		if err := os.WriteFile("data.json", js, 0664); err == nil {
+		   			fmt.Println("Data written to file successfully")
+		   		} */
 	})
 
 	c.Visit(url)

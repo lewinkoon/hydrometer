@@ -12,6 +12,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
+	mux.HandleFunc("/reservoir", reservoir)
 
 	log.Printf("Starting server on %s", *addr)
 	err := http.ListenAndServe(*addr, mux)
