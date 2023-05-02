@@ -9,7 +9,7 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		app.notFound(w)
 		return
 	}
 
@@ -25,7 +25,7 @@ func (app *application) level(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
+		app.notFound(w)
 		return
 	}
 
