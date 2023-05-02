@@ -26,7 +26,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/reservoir", app.reservoir)
+	mux.HandleFunc("/level/", app.level)
 
 	srv := &http.Server{
 		Addr:     *addr,

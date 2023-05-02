@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"path"
 	"strconv"
 )
 
@@ -12,17 +13,17 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	datatable := scrape("https://www.saihduero.es/risr/EM171")
+	datatable := scrape("https://www.saihduero.es/risr/EM171/historico/xATSOFURfFzNx0UR")
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(datatable)
 }
 
-func (app *application) reservoir(w http.ResponseWriter, r *http.Request) {
+func (app *application) level(w http.ResponseWriter, r *http.Request) {
 
-	datatable := scrape("https://www.saihduero.es/risr/EM171")
+	datatable := scrape("https://www.saihduero.es/risr/EM171/historico/xATSOFURfFzNx0UR")
 
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
 		return
